@@ -25,18 +25,25 @@
       background: #ffffff;
       width: 100%;
       max-width: 420px;
-      padding: 28px;
+      padding: 26px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
 
     h1 {
       font-size: 22px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       text-align: center;
     }
 
-    .lang-btn {
+    p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .btn {
       width: 100%;
       padding: 14px;
       font-size: 16px;
@@ -44,46 +51,82 @@
       border: none;
       cursor: pointer;
       margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
     }
 
-    .ru {
+    .primary {
       background: #2a7cff;
       color: #fff;
     }
 
-    .uz {
+    .danger {
+      background: #ff4d4f;
+      color: #fff;
+    }
+
+    .secondary {
       background: #e6ebf2;
       color: #222;
     }
 
-    .lang-btn:active {
-      transform: scale(0.98);
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-<div class="screen">
+<!-- LANGUAGE SCREEN -->
+<div id="screen-language" class="screen">
   <div class="card">
     <h1>Выберите язык</h1>
 
-    <button class="lang-btn ru" onclick="selectLanguage('ru')">
+    <button class="btn primary" onclick="selectLanguage('ru')">
       🇷🇺 Русский
     </button>
 
-    <button class="lang-btn uz" onclick="selectLanguage('uz')">
+    <button class="btn secondary" onclick="selectLanguage('uz')">
       🇺🇿 O‘zbekcha
     </button>
   </div>
 </div>
 
+<!-- POLICY SCREEN -->
+<div id="screen-policy" class="screen hidden">
+  <div class="card">
+    <h1>Политика использования</h1>
+
+    <p>
+      Я не являюсь врачом.  
+      Информация носит справочный характер и не заменяет консультацию специалиста.
+      <br><br>
+      Нажимая «Принять», вы соглашаетесь с условиями использования приложения.
+    </p>
+
+    <button class="btn primary" onclick="acceptPolicy()">
+      ✅ Принять
+    </button>
+
+    <button class="btn danger" onclick="declinePolicy()">
+      ❌ Отказаться
+    </button>
+  </div>
+</div>
+
 <script>
+  let selectedLanguage = null;
+
   function selectLanguage(lang) {
-    alert('Выбран язык: ' + lang);
+    selectedLanguage = lang;
+    document.getElementById('screen-language').classList.add('hidden');
+    document.getElementById('screen-policy').classList.remove('hidden');
+  }
+
+  function acceptPolicy() {
+    alert('Политика принята. Язык: ' + selectedLanguage);
+  }
+
+  function declinePolicy() {
+    alert('Без принятия условий продолжить нельзя');
   }
 </script>
 
