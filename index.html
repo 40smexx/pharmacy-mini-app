@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Аптека</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #222;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background-color: #2a7cff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:active {
+      background-color: #1f66d1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Онлайн аптека</h1>
+    <p>Найдите информацию о лекарстве по фотографии упаковки.</p>
+
+    <button onclick="onPhotoSearch()">
+      Поиск по фото
+    </button>
+  </div>
+
+  <script>
+    function onPhotoSearch() {
+      alert("Кнопка работает. Следующий шаг — фото.");
+    }
+  </script>
+
+</body>
+</html>
