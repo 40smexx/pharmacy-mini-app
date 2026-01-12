@@ -2,66 +2,160 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Аптека</title>
+  <title>Pharmacy App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background-color: #f5f7fa;
+      background: #f5f7fa;
       color: #222;
     }
 
-    .container {
-      padding: 20px;
+    .app {
       max-width: 420px;
       margin: 0 auto;
+      padding: 20px;
     }
 
     h1 {
       font-size: 22px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     p {
       font-size: 14px;
       color: #555;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
-    button {
+    .btn {
       width: 100%;
       padding: 14px;
       font-size: 16px;
-      background-color: #2a7cff;
-      color: white;
-      border: none;
       border-radius: 10px;
+      border: none;
       cursor: pointer;
+      margin-bottom: 12px;
     }
 
-    button:active {
-      background-color: #1f66d1;
+    .primary {
+      background: #2a7cff;
+      color: #fff;
+    }
+
+    .secondary {
+      background: #e6ebf2;
+      color: #222;
+    }
+
+    .danger {
+      background: #ff4d4f;
+      color: #fff;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .loader {
+      margin: 40px auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ddd;
+      border-top: 4px solid #2a7cff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Онлайн аптека</h1>
-    <p>Найдите информацию о лекарстве по фотографии упаковки.</p>
+<div class="app">
 
-    <button onclick="onPhotoSearch()">
-      Поиск по фото
-    </button>
+  <!-- LANGUAGE -->
+  <div id="screen-language" class="card">
+    <h1>Выберите язык</h1>
+    <button class="btn primary" onclick="goPolicy()">Русский</button>
+    <button class="btn secondary" onclick="goPolicy()">O‘zbekcha</button>
   </div>
 
-  <script>
-    function onPhotoSearch() {
-      alert("Кнопка работает. Следующий шаг — фото.");
-    }
-  </script>
+  <!-- POLICY -->
+  <div id="screen-policy" class="card hidden">
+    <h1>Политика использования</h1>
+    <p>
+      Приложение предоставляет справочную информацию о лекарственных средствах.
+      Оно не заменяет консультацию врача.
+    </p>
+    <button class="btn primary" onclick="goMenu()">Принять</button>
+    <button class="btn danger" onclick="alert('Без принятия продолжить нельзя')">Отклонить</button>
+  </div>
+
+  <!-- MENU -->
+  <div id="screen-menu" class="card hidden">
+    <h1>Главное меню</h1>
+    <button class="btn primary" onclick="goProcessing('photo')">Поиск по фото</button>
+    <button class="btn secondary" onclick="goProcessing('text')">Поиск по названию</button>
+  </div>
+
+  <!-- PROCESSING -->
+  <div id="screen-processing" class="card hidden">
+    <h1>Обработка</h1>
+    <p id="processing-text">Обрабатываем запрос…</p>
+    <div class="loader"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="card hidden">
+    <h1>Результат</h1>
+    <p><strong>Название:</strong> Пример препарата</p>
+    <p>Краткое описание препарата будет здесь.</p>
+    <button class="btn secondary" onclick="goMenu()">Назад в меню</button>
+  </div>
+
+</div>
+
+<script>
+  function hideAll() {
+    document.querySelectorAll('.card').forEach(el => el.classList.add('hidden'));
+  }
+
+  function goPolicy() {
+    hideAll();
+    document.getElementById('screen-policy').classList.remove('hidden');
+  }
+
+  function goMenu() {
+    hideAll();
+    document.getElementById('screen-menu').classList.remove('hidden');
+  }
+
+  function goProcessing(type) {
+    hideAll();
+    const text = type === 'photo'
+      ? 'Обрабатываем фотографию…'
+      : 'Обрабатываем текст…';
+    document.getElementById('processing-text').innerText = text;
+    document.getElementById('screen-processing').classList.remove('hidden');
+
+    setTimeout(() => {
+      hideAll();
+      document.getElementById('screen-result').classList.remove('hidden');
+    }, 2000);
+  }
+</script>
 
 </body>
 </html>
