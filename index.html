@@ -28,19 +28,19 @@
       padding: 26px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
     }
 
     h1 {
       font-size: 22px;
       margin-bottom: 16px;
-      text-align: center;
     }
 
     p {
       font-size: 14px;
       color: #555;
       margin-bottom: 20px;
-      text-align: center;
+      line-height: 1.5;
     }
 
     .btn {
@@ -57,6 +57,22 @@
     .secondary { background: #e6ebf2; color: #222; }
     .danger { background: #ff4d4f; color: #fff; }
 
+    .hidden { display: none; }
+
+    .loader {
+      margin: 24px auto;
+      width: 42px;
+      height: 42px;
+      border: 4px solid #ddd;
+      border-top: 4px solid #2a7cff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     input[type="text"] {
       width: 100%;
       padding: 14px;
@@ -70,8 +86,6 @@
       width: 100%;
       margin-bottom: 16px;
     }
-
-    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -89,9 +103,7 @@
 <div id="screen-policy" class="screen hidden">
   <div class="card">
     <h1>Политика использования</h1>
-    <p>
-      Информация носит справочный характер и не заменяет консультацию врача.
-    </p>
+    <p>Информация носит справочный характер и не заменяет консультацию врача.</p>
     <button class="btn primary" onclick="acceptPolicy()">✅ Принять</button>
     <button class="btn danger" onclick="declinePolicy()">❌ Отказаться</button>
   </div>
@@ -110,9 +122,8 @@
 <div id="screen-photo" class="screen hidden">
   <div class="card">
     <h1>Поиск по фото</h1>
-    <p>Загрузите фотографию упаковки лекарства</p>
     <input type="file" accept="image/*">
-    <button class="btn primary" onclick="startProcessing()">Начать поиск</button>
+    <button class="btn primary" onclick="startProcessing('photo')">Начать поиск</button>
     <button class="btn secondary" onclick="goMenu()">← Назад</button>
   </div>
 </div>
@@ -121,10 +132,28 @@
 <div id="screen-text" class="screen hidden">
   <div class="card">
     <h1>Поиск по названию</h1>
-    <p>Введите название лекарства</p>
     <input type="text" placeholder="Например: Нурофен">
-    <button class="btn primary" onclick="startProcessing()">Начать поиск</button>
+    <button class="btn primary" onclick="startProcessing('text')">Начать поиск</button>
     <button class="btn secondary" onclick="goMenu()">← Назад</button>
+  </div>
+</div>
+
+<!-- PROCESSING -->
+<div id="screen-processing" class="screen hidden">
+  <div class="card">
+    <h1>Обработка</h1>
+    <p id="processing-text">Обрабатываем запрос…</p>
+    <div class="loader"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="screen hidden">
+  <div class="card">
+    <h1>Результат</h1>
+    <p><strong>Название:</strong> Пример препарата</p>
+    <p>Краткое описание препарата будет здесь.</p>
+    <button class="btn secondary" onclick="goMenu()">← В меню</button>
   </div>
 </div>
 
@@ -162,8 +191,16 @@
     document.getElementById('screen-text').classList.remove('hidden');
   }
 
-  function startProcessing() {
-    alert('Следующий шаг — экран обработки');
+  function startProcessing(type) {
+    hideAll();
+    document.getElementById('processing-text').innerText =
+      type === 'photo' ? 'Обрабатываем фотографию…' : 'Обрабатываем текст…';
+    document.getElementById('screen-processing').classList.remove('hidden');
+
+    setTimeout(() => {
+      hideAll();
+      document.getElementById('screen-result').classList.remove('hidden');
+    }, 2000);
   }
 </script>
 
