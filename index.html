@@ -32,15 +32,15 @@
 
     h1 {
       font-size: 22px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       text-align: center;
     }
 
     p {
       font-size: 14px;
       color: #555;
-      line-height: 1.5;
       margin-bottom: 20px;
+      text-align: center;
     }
 
     .btn {
@@ -51,82 +51,89 @@
       border: none;
       cursor: pointer;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
-    .primary {
-      background: #2a7cff;
-      color: #fff;
-    }
+    .primary { background: #2a7cff; color: #fff; }
+    .secondary { background: #e6ebf2; color: #222; }
+    .settings { background: #f0f0f0; color: #333; }
 
-    .danger {
-      background: #ff4d4f;
-      color: #fff;
-    }
+    .danger { background: #ff4d4f; color: #fff; }
 
-    .secondary {
-      background: #e6ebf2;
-      color: #222;
-    }
-
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
 
-<!-- LANGUAGE SCREEN -->
+<!-- LANGUAGE -->
 <div id="screen-language" class="screen">
   <div class="card">
     <h1>Выберите язык</h1>
-
-    <button class="btn primary" onclick="selectLanguage('ru')">
-      🇷🇺 Русский
-    </button>
-
-    <button class="btn secondary" onclick="selectLanguage('uz')">
-      🇺🇿 O‘zbekcha
-    </button>
+    <button class="btn primary" onclick="selectLanguage('ru')">🇷🇺 Русский</button>
+    <button class="btn secondary" onclick="selectLanguage('uz')">🇺🇿 O‘zbekcha</button>
   </div>
 </div>
 
-<!-- POLICY SCREEN -->
+<!-- POLICY -->
 <div id="screen-policy" class="screen hidden">
   <div class="card">
     <h1>Политика использования</h1>
-
     <p>
-      Я не являюсь врачом.  
-      Информация носит справочный характер и не заменяет консультацию специалиста.
-      <br><br>
-      Нажимая «Принять», вы соглашаетесь с условиями использования приложения.
+      Я не являюсь врачом. Информация носит справочный характер.<br><br>
+      Нажимая «Принять», вы соглашаетесь с условиями использования.
     </p>
+    <button class="btn primary" onclick="acceptPolicy()">✅ Принять</button>
+    <button class="btn danger" onclick="declinePolicy()">❌ Отказаться</button>
+  </div>
+</div>
 
-    <button class="btn primary" onclick="acceptPolicy()">
-      ✅ Принять
-    </button>
+<!-- MENU -->
+<div id="screen-menu" class="screen hidden">
+  <div class="card">
+    <h1>Главное меню</h1>
+    <p>Выберите действие:</p>
 
-    <button class="btn danger" onclick="declinePolicy()">
-      ❌ Отказаться
-    </button>
+    <button class="btn primary" onclick="goPhoto()">📷 Поиск по фото</button>
+    <button class="btn secondary" onclick="goText()">🔍 Поиск по названию</button>
+    <button class="btn settings" onclick="openSettings()">⚙️ Настройки</button>
   </div>
 </div>
 
 <script>
   let selectedLanguage = null;
 
+  function hideAll() {
+    document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
+  }
+
   function selectLanguage(lang) {
     selectedLanguage = lang;
-    document.getElementById('screen-language').classList.add('hidden');
+    hideAll();
     document.getElementById('screen-policy').classList.remove('hidden');
   }
 
   function acceptPolicy() {
-    alert('Политика принята. Язык: ' + selectedLanguage);
+    hideAll();
+    document.getElementById('screen-menu').classList.remove('hidden');
   }
 
   function declinePolicy() {
     alert('Без принятия условий продолжить нельзя');
+  }
+
+  function goPhoto() {
+    alert('Дальше будет экран загрузки фото');
+  }
+
+  function goText() {
+    alert('Дальше будет экран ввода названия');
+  }
+
+  function openSettings() {
+    alert('Экран настроек будет позже');
   }
 </script>
 
