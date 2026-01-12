@@ -28,17 +28,40 @@
       padding: 28px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      text-align: center;
     }
 
     h1 {
       font-size: 22px;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
+      text-align: center;
     }
 
-    p {
-      font-size: 14px;
-      color: #555;
+    .lang-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .ru {
+      background: #2a7cff;
+      color: #fff;
+    }
+
+    .uz {
+      background: #e6ebf2;
+      color: #222;
+    }
+
+    .lang-btn:active {
+      transform: scale(0.98);
     }
   </style>
 </head>
@@ -46,10 +69,23 @@
 
 <div class="screen">
   <div class="card">
-    <h1>Аптечный помощник</h1>
-    <p>Приложение загружено</p>
+    <h1>Выберите язык</h1>
+
+    <button class="lang-btn ru" onclick="selectLanguage('ru')">
+      🇷🇺 Русский
+    </button>
+
+    <button class="lang-btn uz" onclick="selectLanguage('uz')">
+      🇺🇿 O‘zbekcha
+    </button>
   </div>
 </div>
+
+<script>
+  function selectLanguage(lang) {
+    alert('Выбран язык: ' + lang);
+  }
+</script>
 
 </body>
 </html>
