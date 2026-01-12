@@ -33,14 +33,7 @@
 
     h1 {
       font-size: 22px;
-      margin-bottom: 16px;
-    }
-
-    p {
-      font-size: 14px;
-      color: #555;
       margin-bottom: 20px;
-      line-height: 1.5;
     }
 
     .btn {
@@ -51,156 +44,83 @@
       border: none;
       cursor: pointer;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .primary { background: #2a7cff; color: #fff; }
     .secondary { background: #e6ebf2; color: #222; }
-    .danger { background: #ff4d4f; color: #fff; }
 
     .hidden { display: none; }
-
-    .loader {
-      margin: 24px auto;
-      width: 42px;
-      height: 42px;
-      border: 4px solid #ddd;
-      border-top: 4px solid #2a7cff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      margin-bottom: 16px;
-    }
-
-    input[type="file"] {
-      width: 100%;
-      margin-bottom: 16px;
-    }
   </style>
 </head>
 <body>
 
-<!-- LANGUAGE -->
+<!-- LANGUAGE SCREEN -->
 <div id="screen-language" class="screen">
   <div class="card">
     <h1>Выберите язык</h1>
-    <button class="btn primary" onclick="selectLanguage('ru')">🇷🇺 Русский</button>
-    <button class="btn secondary" onclick="selectLanguage('uz')">🇺🇿 O‘zbekcha</button>
+
+    <button class="btn primary" onclick="selectLanguage('ru')">
+      🇷🇺 Русский
+    </button>
+
+    <button class="btn secondary" onclick="selectLanguage('uz')">
+      🇺🇿 O‘zbekcha
+    </button>
   </div>
 </div>
 
-<!-- POLICY -->
+<!-- POLICY SCREEN -->
 <div id="screen-policy" class="screen hidden">
   <div class="card">
     <h1>Политика использования</h1>
-    <p>Информация носит справочный характер и не заменяет консультацию врача.</p>
-    <button class="btn primary" onclick="acceptPolicy()">✅ Принять</button>
-    <button class="btn danger" onclick="declinePolicy()">❌ Отказаться</button>
-  </div>
-</div>
+    <p style="font-size:14px;color:#555;margin-bottom:20px;">
+      Информация носит справочный характер и не заменяет консультацию врача.
+    </p>
 
-<!-- MENU -->
-<div id="screen-menu" class="screen hidden">
-  <div class="card">
-    <h1>Главное меню</h1>
-    <button class="btn primary" onclick="goPhoto()">📷 Поиск по фото</button>
-    <button class="btn secondary" onclick="goText()">🔍 Поиск по названию</button>
-  </div>
-</div>
-
-<!-- PHOTO -->
-<div id="screen-photo" class="screen hidden">
-  <div class="card">
-    <h1>Поиск по фото</h1>
-    <input type="file" accept="image/*">
-    <button class="btn primary" onclick="startProcessing('photo')">Начать поиск</button>
-    <button class="btn secondary" onclick="goMenu()">← Назад</button>
-  </div>
-</div>
-
-<!-- TEXT -->
-<div id="screen-text" class="screen hidden">
-  <div class="card">
-    <h1>Поиск по названию</h1>
-    <input type="text" placeholder="Например: Нурофен">
-    <button class="btn primary" onclick="startProcessing('text')">Начать поиск</button>
-    <button class="btn secondary" onclick="goMenu()">← Назад</button>
-  </div>
-</div>
-
-<!-- PROCESSING -->
-<div id="screen-processing" class="screen hidden">
-  <div class="card">
-    <h1>Обработка</h1>
-    <p id="processing-text">Обрабатываем запрос…</p>
-    <div class="loader"></div>
-  </div>
-</div>
-
-<!-- RESULT -->
-<div id="screen-result" class="screen hidden">
-  <div class="card">
-    <h1>Результат</h1>
-    <p><strong>Название:</strong> Пример препарата</p>
-    <p>Краткое описание препарата будет здесь.</p>
-    <button class="btn secondary" onclick="goMenu()">← В меню</button>
+    <button class="btn primary">
+      ✅ Принять
+    </button>
   </div>
 </div>
 
 <script>
+  const WEBHOOK_URL = "https://hook.eu1.make.com/39w70lnaghc7m58h7yq7dpvjq8n2jktt";
+
   function hideAll() {
     document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
   }
 
-  function selectLanguage() {
-    hideAll();
-    document.getElementById('screen-policy').classList.remove('hidden');
-  }
+  async function selectLanguage(lang) {
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          action: "select_language",
+          language: lang
+        })
+      });
 
-  function acceptPolicy() {
-    hideAll();
-    document.getElementById('screen-menu').classList.remove('hidden');
-  }
+      const data = await response.json();
+      console.log("Make response:", data);
 
-  function declinePolicy() {
-    alert('Без принятия условий продолжить нельзя');
-  }
+      if (data.status === "ok") {
+        hideAll();
+        document.getElementById("screen-policy").classList.remove("hidden");
+      } else {
+        alert("Ошибка ответа от сервера");
+      }
 
-  function goMenu() {
-    hideAll();
-    document.getElementById('screen-menu').classList.remove('hidden');
-  }
-
-  function goPhoto() {
-    hideAll();
-    document.getElementById('screen-photo').classList.remove('hidden');
-  }
-
-  function goText() {
-    hideAll();
-    document.getElementById('screen-text').classList.remove('hidden');
-  }
-
-  function startProcessing(type) {
-    hideAll();
-    document.getElementById('processing-text').innerText =
-      type === 'photo' ? 'Обрабатываем фотографию…' : 'Обрабатываем текст…';
-    document.getElementById('screen-processing').classList.remove('hidden');
-
-    setTimeout(() => {
-      hideAll();
-      document.getElementById('screen-result').classList.remove('hidden');
-    }, 2000);
+    } catch (err) {
+      console.error(err);
+      alert("Ошибка соединения с сервером");
+    }
   }
 </script>
 
