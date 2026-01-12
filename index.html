@@ -36,6 +36,12 @@
       margin-bottom: 20px;
     }
 
+    p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
     .btn {
       width: 100%;
       padding: 14px;
@@ -58,7 +64,7 @@
 </head>
 <body>
 
-<!-- LANGUAGE SCREEN -->
+<!-- LANGUAGE -->
 <div id="screen-language" class="screen">
   <div class="card">
     <h1>Выберите язык</h1>
@@ -73,16 +79,31 @@
   </div>
 </div>
 
-<!-- POLICY SCREEN -->
+<!-- POLICY -->
 <div id="screen-policy" class="screen hidden">
   <div class="card">
     <h1>Политика использования</h1>
-    <p style="font-size:14px;color:#555;margin-bottom:20px;">
+    <p>
       Информация носит справочный характер и не заменяет консультацию врача.
     </p>
 
-    <button class="btn primary">
+    <button class="btn primary" onclick="acceptPolicy()">
       ✅ Принять
+    </button>
+  </div>
+</div>
+
+<!-- MENU -->
+<div id="screen-menu" class="screen hidden">
+  <div class="card">
+    <h1>Главное меню</h1>
+
+    <button class="btn primary">
+      📷 Поиск по фото
+    </button>
+
+    <button class="btn secondary">
+      🔍 Поиск по названию
     </button>
   </div>
 </div>
@@ -98,9 +119,7 @@
     try {
       const response = await fetch(WEBHOOK_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "select_language",
           language: lang
@@ -108,18 +127,38 @@
       });
 
       const data = await response.json();
-      console.log("Make response:", data);
 
       if (data.status === "ok") {
         hideAll();
         document.getElementById("screen-policy").classList.remove("hidden");
       } else {
-        alert("Ошибка ответа от сервера");
+        alert("Ошибка сервера");
       }
+    } catch {
+      alert("Ошибка соединения");
+    }
+  }
 
-    } catch (err) {
-      console.error(err);
-      alert("Ошибка соединения с сервером");
+  async function acceptPolicy() {
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "accept_policy"
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.status === "ok") {
+        hideAll();
+        document.getElementById("screen-menu").classList.remove("hidden");
+      } else {
+        alert("Ошибка сервера");
+      }
+    } catch {
+      alert("Ошибка соединения");
     }
   }
 </script>
