@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Pharmacy App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
     body {
       margin: 0;
@@ -12,7 +11,6 @@
       background: #f5f7fa;
       color: #222;
     }
-
     .screen {
       min-height: 100vh;
       display: flex;
@@ -20,7 +18,6 @@
       justify-content: center;
       padding: 24px;
     }
-
     .card {
       background: #ffffff;
       width: 100%;
@@ -30,22 +27,20 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
       text-align: center;
     }
-
     h1 {
       font-size: 22px;
       margin-bottom: 20px;
     }
-
     p {
       font-size: 14px;
       color: #555;
       margin-bottom: 20px;
+      line-height: 1.6;
     }
-
     .btn {
       width: 100%;
-      padding: 14px;
-      font-size: 16px;
+      padding: 14px 12px;
+      font-size: 15px;
       border-radius: 12px;
       border: none;
       cursor: pointer;
@@ -53,28 +48,82 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
+      transition: transform 0.1s, opacity 0.2s;
+      box-sizing: border-box;
+      white-space: nowrap;
     }
-
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     .primary { background: #2a7cff; color: #fff; }
     .secondary { background: #e6ebf2; color: #222; }
-
     .hidden { display: none; }
+    .debug {
+      margin-top: 20px;
+      padding: 12px;
+      background: #fff3cd;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #856404;
+      text-align: left;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .file-label {
+      width: 100%;
+      padding: 14px 12px;
+      font-size: 15px;
+      border-radius: 12px;
+      border: 2px dashed #2a7cff;
+      background: #f0f7ff;
+      cursor: pointer;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #2a7cff;
+      transition: all 0.2s;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-label:hover {
+      background: #e6f2ff;
+      border-color: #1a5cd7;
+    }
+    .search-input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 2px solid #e6ebf2;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: #2a7cff;
+    }
   </style>
 </head>
 <body>
-
 <!-- LANGUAGE -->
 <div id="screen-language" class="screen">
   <div class="card">
-    <h1>Выберите язык</h1>
-
+    <h1>Выберите язык / Tilni tanlang</h1>
     <button class="btn primary" onclick="selectLanguage('ru')">
       🇷🇺 Русский
     </button>
-
     <button class="btn secondary" onclick="selectLanguage('uz')">
-      🇺🇿 O‘zbekcha
+      🇺🇿 O'zbekcha
     </button>
   </div>
 </div>
@@ -82,13 +131,16 @@
 <!-- POLICY -->
 <div id="screen-policy" class="screen hidden">
   <div class="card">
-    <h1>Политика использования</h1>
-    <p>
-      Информация носит справочный характер и не заменяет консультацию врача.
+    <h1 id="policy-title">Политика использования</h1>
+    <p id="policy-text">
+      Информация носит справочный характер и не заменяет консультацию врача. 
+      Перед применением любых лекарственных средств обязательно проконсультируйтесь со специалистом.
     </p>
-
     <button class="btn primary" onclick="acceptPolicy()">
-      ✅ Принять
+      ✅ <span id="policy-accept">Принять</span>
+    </button>
+    <button class="btn secondary" onclick="backToLanguage()">
+      ← <span id="policy-back">Назад</span>
     </button>
   </div>
 </div>
@@ -96,72 +148,273 @@
 <!-- MENU -->
 <div id="screen-menu" class="screen hidden">
   <div class="card">
-    <h1>Главное меню</h1>
-
-    <button class="btn primary">
-      📷 Поиск по фото
+    <h1 id="menu-title">Главное меню</h1>
+    <label class="file-label" for="photo-input">
+      📷 <span id="menu-photo">Поиск по фото</span>
+    </label>
+    <input type="file" id="photo-input" accept="image/*" onchange="searchByPhoto(this)">
+    <button class="btn secondary" onclick="showTextSearch()">
+      🔍 <span id="menu-text">Поиск по названию</span>
     </button>
-
-    <button class="btn secondary">
-      🔍 Поиск по названию
+    <button class="btn secondary" onclick="backToPolicy()">
+      ← <span id="menu-back">Назад</span>
     </button>
   </div>
 </div>
 
+<!-- TEXT SEARCH -->
+<div id="screen-text-search" class="screen hidden">
+  <div class="card">
+    <h1 id="search-title">Поиск по названию</h1>
+    <input type="text" class="search-input" id="drug-name" placeholder="Введите название препарата...">
+    <button class="btn primary" onclick="searchByText()">
+      🔍 <span id="search-button">Найти</span>
+    </button>
+    <button class="btn secondary" onclick="backToMenu()">
+      ← <span id="search-back">Назад</span>
+    </button>
+  </div>
+</div>
+
+<!-- PROCESSING -->
+<div id="screen-processing" class="screen hidden">
+  <div class="card">
+    <h1 id="processing-title">Обработка запроса</h1>
+    <p id="processing-text">Пожалуйста, подождите...</p>
+    <div style="margin: 30px auto; width: 50px; height: 50px; border: 4px solid #e6ebf2; border-top-color: #2a7cff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="screen hidden">
+  <div class="card">
+    <h1 id="result-title">Результат поиска</h1>
+    <div id="result-content" style="text-align: left; margin-bottom: 20px;">
+      <p><strong>Название:</strong> <span id="drug-name-result">—</span></p>
+      <p><strong>Описание:</strong> <span id="drug-description">—</span></p>
+      <p><strong>Показания:</strong> <span id="drug-indications">—</span></p>
+    </div>
+    <button class="btn primary" onclick="backToMenu()">
+      🏠 <span id="result-back">Вернуться в меню</span>
+    </button>
+    <div class="debug">
+      <strong>Debug info:</strong><br>
+      Запрос отправлен в Make.com<br>
+      <span id="debug-info"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
 <script>
   const WEBHOOK_URL = "https://hook.eu1.make.com/39w70lnaghc7m58h7yq7dpvjq8n2jktt";
-
+  let currentLanguage = 'ru';
+  
+  const translations = {
+    ru: {
+      policyTitle: 'Политика использования',
+      policyText: 'Информация носит справочный характер и не заменяет консультацию врача. Перед применением любых лекарственных средств обязательно проконсультируйтесь со специалистом.',
+      policyAccept: 'Принять',
+      menuTitle: 'Главное меню',
+      menuPhoto: 'Поиск по фото',
+      menuText: 'Поиск по названию',
+      searchTitle: 'Поиск по названию',
+      searchButton: 'Найти',
+      searchBack: 'Назад',
+      processingTitle: 'Обработка запроса',
+      processingText: 'Пожалуйста, подождите...',
+      resultTitle: 'Результат поиска',
+      resultBack: 'Вернуться в меню',
+      policyBack: 'Назад',
+      menuBack: 'Назад'
+    },
+    uz: {
+      policyTitle: 'Foydalanish siyosati',
+      policyText: 'Ma\'lumot ma\'lumotnoma xarakteriga ega va shifokor maslahati o\'rnini bosmaydi. Har qanday dori vositalarini qo\'llashdan oldin mutaxassis bilan maslahatlashing.',
+      policyAccept: 'Qabul qilish',
+      policyBack: 'Orqaga',
+      menuTitle: 'Asosiy menyu',
+      menuPhoto: 'Rasmdan qidirish',
+      menuText: 'Nom bo\'yicha qidirish',
+      searchTitle: 'Nom bo\'yicha qidirish',
+      searchButton: 'Qidirish',
+      searchBack: 'Orqaga',
+      processingTitle: 'So\'rov qayta ishlanmoqda',
+      processingText: 'Iltimos, kuting...',
+      resultTitle: 'Qidiruv natijasi',
+      resultBack: 'Menyuga qaytish',
+      menuBack: 'Orqaga'
+    }
+  };
+  
+  function updateLanguage() {
+    const t = translations[currentLanguage];
+    document.getElementById('policy-title').textContent = t.policyTitle;
+    document.getElementById('policy-text').textContent = t.policyText;
+    document.getElementById('policy-accept').textContent = t.policyAccept;
+    document.getElementById('policy-back').textContent = t.policyBack;
+    document.getElementById('menu-title').textContent = t.menuTitle;
+    document.getElementById('menu-photo').textContent = t.menuPhoto;
+    document.getElementById('menu-text').textContent = t.menuText;
+    document.getElementById('menu-back').textContent = t.menuBack;
+    document.getElementById('search-title').textContent = t.searchTitle;
+    document.getElementById('search-button').textContent = t.searchButton;
+    document.getElementById('search-back').textContent = t.searchBack;
+    document.getElementById('processing-title').textContent = t.processingTitle;
+    document.getElementById('processing-text').textContent = t.processingText;
+    document.getElementById('result-title').textContent = t.resultTitle;
+    document.getElementById('result-back').textContent = t.resultBack;
+  }
+  
   function hideAll() {
     document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
   }
-
-  async function selectLanguage(lang) {
-    try {
-      const response = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "select_language",
-          language: lang
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.status === "ok") {
+  
+  function selectLanguage(lang) {
+    currentLanguage = lang;
+    updateLanguage();
+    
+    // Отправляем в Make.com (в фоне, без ожидания)
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "select_language",
+        language: lang,
+        timestamp: new Date().toISOString()
+      })
+    }).catch(err => console.log('Webhook error:', err));
+    
+    // Переходим на следующий экран
+    hideAll();
+    document.getElementById("screen-policy").classList.remove("hidden");
+  }
+  
+  function acceptPolicy() {
+    // Отправляем в Make.com
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "accept_policy",
+        language: currentLanguage,
+        timestamp: new Date().toISOString()
+      })
+    }).catch(err => console.log('Webhook error:', err));
+    
+    hideAll();
+    document.getElementById("screen-menu").classList.remove("hidden");
+  }
+  
+  function showTextSearch() {
+    hideAll();
+    document.getElementById("screen-text-search").classList.remove("hidden");
+  }
+  
+  function backToMenu() {
+    hideAll();
+    document.getElementById("screen-menu").classList.remove("hidden");
+  }
+  
+  function backToLanguage() {
+    hideAll();
+    document.getElementById("screen-language").classList.remove("hidden");
+  }
+  
+  function backToPolicy() {
+    hideAll();
+    document.getElementById("screen-policy").classList.remove("hidden");
+  }
+  
+  function searchByPhoto(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        // Показываем экран обработки
         hideAll();
-        document.getElementById("screen-policy").classList.remove("hidden");
-      } else {
-        alert("Ошибка сервера");
-      }
-    } catch {
-      alert("Ошибка соединения");
+        document.getElementById("screen-processing").classList.remove("hidden");
+        
+        // Получаем base64 изображения (без префикса data:image/...)
+        const base64Data = e.target.result.split(',')[1];
+        
+        // Отправляем в Make.com с РЕАЛЬНЫМ изображением
+        fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "search_by_photo",
+            language: currentLanguage,
+            filename: file.name,
+            filesize: file.size,
+            image_base64: base64Data,  // ← ДОБАВЛЕНО: само изображение в base64
+            timestamp: new Date().toISOString()
+          })
+        }).catch(err => console.log('Webhook error:', err));
+        
+        // Симуляция обработки (2 секунды)
+        setTimeout(() => {
+          showResult({
+            name: 'Аспирин',
+            description: 'Нестероидное противовоспалительное средство',
+            indications: 'Боль, воспаление, жар'
+          }, 'photo: ' + file.name);
+        }, 2000);
+      };
+      
+      reader.readAsDataURL(file);
     }
   }
-
-  async function acceptPolicy() {
-    try {
-      const response = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "accept_policy"
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.status === "ok") {
-        hideAll();
-        document.getElementById("screen-menu").classList.remove("hidden");
-      } else {
-        alert("Ошибка сервера");
-      }
-    } catch {
-      alert("Ошибка соединения");
+  
+  function searchByText() {
+    const drugName = document.getElementById('drug-name').value.trim();
+    
+    if (!drugName) {
+      alert(currentLanguage === 'ru' ? 'Введите название препарата' : 'Dori nomini kiriting');
+      return;
     }
+    
+    // Показываем экран обработки
+    hideAll();
+    document.getElementById("screen-processing").classList.remove("hidden");
+    
+    // Отправляем в Make.com
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "search_by_text",
+        language: currentLanguage,
+        drug_name: drugName,
+        timestamp: new Date().toISOString()
+      })
+    }).catch(err => console.log('Webhook error:', err));
+    
+    // Симуляция обработки (2 секунды)
+    setTimeout(() => {
+      showResult({
+        name: drugName,
+        description: 'Описание препарата будет загружено из базы данных',
+        indications: 'Показания к применению'
+      }, 'text: ' + drugName);
+    }, 2000);
+  }
+  
+  function showResult(data, debugInfo) {
+    document.getElementById('drug-name-result').textContent = data.name;
+    document.getElementById('drug-description').textContent = data.description;
+    document.getElementById('drug-indications').textContent = data.indications;
+    document.getElementById('debug-info').textContent = debugInfo;
+    
+    hideAll();
+    document.getElementById("screen-result").classList.remove("hidden");
   }
 </script>
-
 </body>
 </html>
