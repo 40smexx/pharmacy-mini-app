@@ -32,7 +32,7 @@
 
     h1 {
       font-size: 22px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       text-align: center;
     }
 
@@ -51,17 +51,25 @@
       border: none;
       cursor: pointer;
       margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
     }
 
     .primary { background: #2a7cff; color: #fff; }
     .secondary { background: #e6ebf2; color: #222; }
-    .settings { background: #f0f0f0; color: #333; }
-
     .danger { background: #ff4d4f; color: #fff; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      margin-bottom: 16px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      margin-bottom: 16px;
+    }
 
     .hidden { display: none; }
   </style>
@@ -82,8 +90,7 @@
   <div class="card">
     <h1>Политика использования</h1>
     <p>
-      Я не являюсь врачом. Информация носит справочный характер.<br><br>
-      Нажимая «Принять», вы соглашаетесь с условиями использования.
+      Информация носит справочный характер и не заменяет консультацию врача.
     </p>
     <button class="btn primary" onclick="acceptPolicy()">✅ Принять</button>
     <button class="btn danger" onclick="declinePolicy()">❌ Отказаться</button>
@@ -94,23 +101,39 @@
 <div id="screen-menu" class="screen hidden">
   <div class="card">
     <h1>Главное меню</h1>
-    <p>Выберите действие:</p>
-
     <button class="btn primary" onclick="goPhoto()">📷 Поиск по фото</button>
     <button class="btn secondary" onclick="goText()">🔍 Поиск по названию</button>
-    <button class="btn settings" onclick="openSettings()">⚙️ Настройки</button>
+  </div>
+</div>
+
+<!-- PHOTO -->
+<div id="screen-photo" class="screen hidden">
+  <div class="card">
+    <h1>Поиск по фото</h1>
+    <p>Загрузите фотографию упаковки лекарства</p>
+    <input type="file" accept="image/*">
+    <button class="btn primary" onclick="startProcessing()">Начать поиск</button>
+    <button class="btn secondary" onclick="goMenu()">← Назад</button>
+  </div>
+</div>
+
+<!-- TEXT -->
+<div id="screen-text" class="screen hidden">
+  <div class="card">
+    <h1>Поиск по названию</h1>
+    <p>Введите название лекарства</p>
+    <input type="text" placeholder="Например: Нурофен">
+    <button class="btn primary" onclick="startProcessing()">Начать поиск</button>
+    <button class="btn secondary" onclick="goMenu()">← Назад</button>
   </div>
 </div>
 
 <script>
-  let selectedLanguage = null;
-
   function hideAll() {
     document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
   }
 
-  function selectLanguage(lang) {
-    selectedLanguage = lang;
+  function selectLanguage() {
     hideAll();
     document.getElementById('screen-policy').classList.remove('hidden');
   }
@@ -124,16 +147,23 @@
     alert('Без принятия условий продолжить нельзя');
   }
 
+  function goMenu() {
+    hideAll();
+    document.getElementById('screen-menu').classList.remove('hidden');
+  }
+
   function goPhoto() {
-    alert('Дальше будет экран загрузки фото');
+    hideAll();
+    document.getElementById('screen-photo').classList.remove('hidden');
   }
 
   function goText() {
-    alert('Дальше будет экран ввода названия');
+    hideAll();
+    document.getElementById('screen-text').classList.remove('hidden');
   }
 
-  function openSettings() {
-    alert('Экран настроек будет позже');
+  function startProcessing() {
+    alert('Следующий шаг — экран обработки');
   }
 </script>
 
